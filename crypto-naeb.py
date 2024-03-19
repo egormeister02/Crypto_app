@@ -84,7 +84,7 @@ class MyWindow(QMainWindow):
 
                 except ccxt.AuthenticationError as e:
                     print(e)
-                    dialog = CustomDialog('Error of authentication ', 'check that the API Key and Secret Key are correct')
+                    dialog = CustomDialog('Error of authentication ', 'check that the API Key, Secret Key and password are correct')
                     sys.exit(dialog.exec())
 
                 except Exception as e:
@@ -125,10 +125,13 @@ class MyWindow(QMainWindow):
                     order = exchange.create_market_sell_order(symbol + '/USDT', amount)
                     s += f"Продано {symbol}: Количество - {order['amount']}\n"
                 except ccxt.NetworkError as e:
+                    print(e)
                     s += f"Error {symbol}: NetworkError"
                 except ccxt.ExchangeError as e:
+                    print(e)
                     s += f"Error {symbol}: ExchangeError"
                 except Exception as e:
+                    print(e)
                     s += f"Error {symbol}: Exception"
         dialog = CustomDialog('Report',s)
         dialog.exec()
@@ -165,10 +168,13 @@ class MyWindow(QMainWindow):
                         order = exchange.create_market_buy_order(symbol.upper() + '/USDT', amount)
                         s += f"Куплено {symbol} На сумму: {order['amount']} USDT\n"
                     except ccxt.NetworkError as e:
+                        print(e)
                         s += f"Error {symbol}: NetworkError"
                     except ccxt.ExchangeError as e:
+                        print(e)
                         s += f"Error {symbol}: ExchangeError"
                     except Exception as e:
+                        print(e)
                         s += f"Error {symbol}: Exception"
             dialog = CustomDialog('Report',s)
             dialog.exec()
