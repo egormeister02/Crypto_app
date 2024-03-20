@@ -2,12 +2,14 @@
 1. Для начала необходимо ввести свои данные в файл `config.txt`.\
 Он выглядит следующим образом:
     ```
+    test = <if using test-API>
     apikey = <your apikey>
     secretkey = <your secretkey>
     password = <your password>
     path_to_excel = <path to excel file>
     ```
     Соответственно введите вместо\
+    `<if using test-API>` 1 если используете тестовый API и 0 если используете реальный API
     `<your apikey>` ваш API ключ\
     `<your secretkey>` ваш секретный API ключ\
     `<your password>` секретную фразу которую вы вводили при создании API\

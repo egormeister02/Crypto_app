@@ -57,30 +57,31 @@ class MyWindow(QMainWindow):
             secretkey = config.get('secretkey')
             password = config.get('password')
             path_excel = config.get('path_to_excel')
+            test = bool(config.get('test'))
 
             if apikey and secretkey:
                 print('\nAPI data from the file "config.txt" was read correctly:')
+                print(f'test = {test}')
                 print("API Key:", apikey)
                 print("Secret Key:", secretkey)
                 print("Your password:", password)
-
+                
                 # Создаем объект биржи
                 exchange = ccxt.okx({
                 'apiKey': apikey,
                 'secret': secretkey,
                 'password': password,
-                'enableRateLimit': True,
-                'options': {
-                    'createMarketBuyOrderRequiresPrice': False
-                }
+                'enableRateLimit': True
                 })
+                
+                if (test):
+                    exchange.setSandboxMode(True)
 
                 try:
                     balance = exchange.fetch_balance()  # Получаем статус биржи
                     
                     self.button_sell.show()
-                    self.button_sell.clicked.connect(lambda: self.executeSellOrder(exchange))                    
-                    
+                    self.button_sell.clicked.connect(lambda: self.executeSellOrder(exchange))                                        
 
                 except ccxt.AuthenticationError as e:
                     print(e)
@@ -119,10 +120,11 @@ class MyWindow(QMainWindow):
 
         # Продаем все монеты по рыночной цене
         s = ""
+        exchange.options['createMarketBuyOrderRequiresPrice'] = False
         for symbol, amount in balance['total'].items():
             if amount > 0 and symbol != 'USDT':  # Продаем только те монеты, которые есть на балансе
                 try:
-                    order = exchange.create_market_sell_order(symbol + '/USDT', amount)
+                    order = exchange.createMarketSellOrder(symbol + '/USDT', amount)
                     s += f"Продано {symbol}: Количество - {order['amount']}\n"
                 except ccxt.NetworkError as e:
                     print(e)
@@ -165,17 +167,20 @@ class MyWindow(QMainWindow):
             for symbol, amount in zip(coins, amounts):
                 if amount > 0:  # Проверка, что сумма покупки больше 0
                     try:
-                        order = exchange.create_market_buy_order(symbol.upper() + '/USDT', amount)
-                        s += f"Куплено {symbol} На сумму: {order['amount']} USDT\n"
+                        pair = symbol.upper() + '/USDT'
+                        market_price = exchange.fetchTicker(pair)['last']  # Получаем текущую рыночную цену
+                        quantity = amount / market_price 
+                        order = exchange.create_market_buy_order(pair, quantity)
+                        s += f"Куплено {symbol}  На сумму: {order['cost']} USDT\n"
                     except ccxt.NetworkError as e:
                         print(e)
-                        s += f"Error {symbol}: NetworkError"
+                        s += f"Error {symbol}: NetworkError\n"
                     except ccxt.ExchangeError as e:
                         print(e)
-                        s += f"Error {symbol}: ExchangeError"
+                        s += f"Error {symbol}: ExchangeError\n"
                     except Exception as e:
                         print(e)
-                        s += f"Error {symbol}: Exception"
+                        s += f"Error {symbol}: Exception\n"
             dialog = CustomDialog('Report',s)
             dialog.exec()
 
