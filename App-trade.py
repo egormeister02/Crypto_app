@@ -128,13 +128,13 @@ class MyWindow(QMainWindow):
                     s += f"Продано {symbol}: Количество - {order['amount']}\n"
                 except ccxt.NetworkError as e:
                     print(e)
-                    s += f"Error {symbol}: NetworkError"
+                    s += f"Error {symbol}: NetworkError\n"
                 except ccxt.ExchangeError as e:
                     print(e)
-                    s += f"Error {symbol}: ExchangeError"
+                    s += f"Error {symbol}: ExchangeError\n"
                 except Exception as e:
                     print(e)
-                    s += f"Error {symbol}: Exception"
+                    s += f"Error {symbol}: Exception\n"
         dialog = CustomDialog('Report',s)
         dialog.exec()
 
