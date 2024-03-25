@@ -9,7 +9,7 @@
     path_to_excel = <path to excel file>
     ```
     Соответственно введите вместо\
-    `<if using test-API>` 1 если используете тестовый API и 0 если используете реальный API
+    `<if using test-API>` 1 если используете тестовый API и 0 если используете реальный API\
     `<your apikey>` ваш API ключ\
     `<your secretkey>` ваш секретный API ключ\
     `<your password>` секретную фразу которую вы вводили при создании API\
